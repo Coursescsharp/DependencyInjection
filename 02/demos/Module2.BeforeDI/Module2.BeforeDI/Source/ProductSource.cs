@@ -36,7 +36,7 @@ public class ProductSource : IProductSource
         if (_textFieldParser == null)
             throw new InvalidOperationException("Cannot read from a source that is not yet open");
 
-        var fields = _textFieldParser.ReadFields() ?? throw new InvalidOperationException("Could not read from source");
+        var fields = _textFieldParser.ReadFields()  ?? throw new InvalidOperationException("Could not read from source");
 
         var id = Guid.Parse(fields[0]);
         var name = fields[1];

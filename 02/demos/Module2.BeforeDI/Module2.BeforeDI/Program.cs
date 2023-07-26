@@ -1,24 +1,25 @@
-﻿using Module2.BeforeDI;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Module2.BeforeDI;
 using Module2.BeforeDI.Shared;
 using Module2.BeforeDI.Source;
 using Module2.BeforeDI.Target;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
-var configuration = new Configuration();
-var productFormatter = new ProductFormatter();
-var priceParser = new PriceParser();
+// Configuring the default builder for the application host and configure DI
+// context: It's the host builder context (not used, but is mandatory)
+// services: It's the collection that will be used to register types in 
+//           the classes we want to be using and add our registrations.
 
-var productSource = new ProductSource(configuration, priceParser);
-var productTarget = new ProductTarget(configuration, productFormatter);
-
-var productImpoter = new ProductImporter(productSource, productTarget);
-productImpoter.Run();
-/*
 using var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
+        services.AddTransient<ProductImporter>();
         services.AddTransient<Configuration>();
+        
+        services.AddTransient<IPriceParser, PriceParser>();
+        services.AddTransient<IProductFormatter, ProductFormatter>();
+        services.AddTransient<IProductSource, ProductSource>();
+        services.AddTransient<IProductTarget, ProductTarget>();
     })
     .Build();
 
@@ -26,11 +27,3 @@ var productImporter = host.Services.GetRequiredService<ProductImporter>();
 productImporter.Run();
 
 
-var configuration = new Configuration();
-
-var priceParser = new PriceParser();
-var productSource = new ProductSource(configuration, priceParser);
-
-var productFormatter = new ProductFormatter();
-var productTarget = new ProductTarget(configuration, productFormatter);
-*/
