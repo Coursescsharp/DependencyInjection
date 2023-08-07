@@ -4,6 +4,7 @@ using Module2.BeforeDI;
 using Module2.BeforeDI.Shared;
 using Module2.BeforeDI.Source;
 using Module2.BeforeDI.Target;
+using Serilog;
 
 // Configuring the default builder for the application host and configure DI
 // context: It's the host builder context (not used, but is mandatory)
@@ -13,6 +14,10 @@ using Module2.BeforeDI.Target;
 using var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
+        // Se up Serilog as the logger for the aplication
+        Log.Logger = new LoggerConfiguration()
+        .CreateLogger();
+
         services.AddTransient<ProductImporter>();
         services.AddTransient<Configuration>();
         
@@ -21,6 +26,7 @@ using var host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IProductSource, ProductSource>();
         services.AddTransient<IProductTarget, ProductTarget>();
     })
+    .UseSerilog()
     .Build();
 
 var productImporter = host.Services.GetRequiredService<ProductImporter>();
