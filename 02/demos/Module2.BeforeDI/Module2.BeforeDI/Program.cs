@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Module2.BeforeDI;
 using Module2.BeforeDI.Shared;
 using Module2.BeforeDI.Source;
@@ -11,13 +12,10 @@ using Serilog;
 // services: It's the collection that will be used to register types in 
 //           the classes we want to be using and add our registrations.
 
+
 using var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        // Se up Serilog as the logger for the aplication
-        Log.Logger = new LoggerConfiguration()
-        .CreateLogger();
-
         services.AddTransient<ProductImporter>();
         services.AddTransient<Configuration>();
         
@@ -26,8 +24,20 @@ using var host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IProductSource, ProductSource>();
         services.AddTransient<IProductTarget, ProductTarget>();
     })
-    .UseSerilog()
+    .ConfigureLogging((hostContext, logging) =>
+    {
+        var serilogConfig = hostContext.Configuration.GetSection("Serilog");
+
+        Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(serilogConfig)
+                .CreateLogger();
+
+        logging.ClearProviders();
+        logging.AddSerilog();
+    })
+    //.UseSerilog()
     .Build();
+
 
 var productImporter = host.Services.GetRequiredService<ProductImporter>();
 productImporter.Run();
