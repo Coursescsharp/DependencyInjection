@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Module2.BeforeDI;
+using Module2.BeforeDI.Interfaces;
+using Module2.BeforeDI.Interfaces.Implementations;
 using Module2.BeforeDI.Shared;
 using Module2.BeforeDI.Source;
 using Module2.BeforeDI.Target;
@@ -23,6 +25,7 @@ using var host = Host.CreateDefaultBuilder(args)
         services.AddTransient<IProductFormatter, ProductFormatter>();
         services.AddTransient<IProductSource, ProductSource>();
         services.AddTransient<IProductTarget, ProductTarget>();
+        services.AddSingleton<IImportStatistics, ImportStatistics>();
     })
     .ConfigureLogging((hostContext, logging) =>
     {
@@ -35,7 +38,6 @@ using var host = Host.CreateDefaultBuilder(args)
         logging.ClearProviders();
         logging.AddSerilog();
     })
-    //.UseSerilog()
     .Build();
 
 

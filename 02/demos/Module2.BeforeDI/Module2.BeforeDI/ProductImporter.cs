@@ -1,4 +1,5 @@
-﻿using Module2.BeforeDI.Source;
+﻿using Module2.BeforeDI.Interfaces;
+using Module2.BeforeDI.Source;
 using Module2.BeforeDI.Target;
 
 namespace Module2.BeforeDI;
@@ -11,11 +12,15 @@ public class ProductImporter
 {
     private readonly IProductSource _productSource;
     private readonly IProductTarget _productTarget;
+    private readonly IImportStatistics _importStatistics;
 
-    public ProductImporter(IProductSource productSource, IProductTarget productTarget)
+    public ProductImporter(IProductSource productSource,
+                           IProductTarget productTarget,
+                           IImportStatistics importStatistics)
     {
         _productSource = productSource;
         _productTarget = productTarget;
+        _importStatistics = importStatistics;
     }
 
     public void Run()
@@ -31,5 +36,8 @@ public class ProductImporter
 
         _productSource.Close();
         _productTarget.Close();
+
+        Console.WriteLine("Importing complete!");
+        Console.WriteLine(_importStatistics.GetStatistics());
     }
 }

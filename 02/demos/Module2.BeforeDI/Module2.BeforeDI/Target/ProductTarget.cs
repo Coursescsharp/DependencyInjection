@@ -1,5 +1,7 @@
 ﻿using Module2.BeforeDI.Shared;
 using Module2.BeforeDI.Model;
+using Module2.BeforeDI.Interfaces;
+using Module2.BeforeDI.Interfaces.Implementations;
 
 namespace Module2.BeforeDI.Target;
 
@@ -7,13 +9,16 @@ public class ProductTarget : IProductTarget
 {
     private readonly Configuration _configuration;
     private readonly IProductFormatter _productFormatter;
-
+    private readonly IImportStatistics _importStatistics;
     private StreamWriter? _streamWriter;
 
-    public ProductTarget(Configuration configuration, IProductFormatter productFormatter)
+    public ProductTarget(Configuration configuration,
+                         IProductFormatter productFormatter,
+                         IImportStatistics importStatistics)
     {
         _configuration = configuration;
         _productFormatter = productFormatter;
+        _importStatistics = importStatistics;
     }
 
     public void Open()
@@ -30,6 +35,8 @@ public class ProductTarget : IProductTarget
             throw new InvalidOperationException("Cannot add products to a target that is not yet open");
 
         var productLine = _productFormatter.Format(product);
+        _importStatistics.IncrementOutputCount();
+        
         _streamWriter.WriteLine(productLine);
     }
 
