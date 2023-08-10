@@ -1,7 +1,6 @@
 ﻿using Module2.BeforeDI.Shared;
-using Module2.BeforeDI.Model;
 using Module2.BeforeDI.Interfaces;
-using Module2.BeforeDI.Interfaces.Implementations;
+using Module2.BeforeDI.Models.Model;
 
 namespace Module2.BeforeDI.Target;
 

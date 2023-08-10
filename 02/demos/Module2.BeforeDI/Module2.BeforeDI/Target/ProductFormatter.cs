@@ -1,4 +1,4 @@
-﻿using Module2.BeforeDI.Model;
+﻿using Module2.BeforeDI.Models.Model;
 using System.Globalization;
 using System.Text;
 
